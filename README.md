@@ -1,5 +1,9 @@
 # Symfony Pipeline
 
+[![deno module](https://shield.deno.dev/x/symfony_pipeline)](https://deno.land/x/symfony_pipeline)
+![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/symfony-pipeline)](https://codecov.io/gh/fluent-ci-templates/symfony-pipeline)
+
 A ready-to-use GitLab CI Pipeline and Jobs for your Symfony projects.
 
 ## 🚀 Usage
