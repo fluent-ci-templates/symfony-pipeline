@@ -11,7 +11,7 @@ A ready-to-use GitLab CI Pipeline and Jobs for your Symfony projects.
 Quick start:
 
 ```ts
-import { GitLab } from "https://deno.land/x/symphony_pipeline/mod.ts";
+import { GitLab } from "https://deno.land/x/symfony_pipeline/mod.ts";
 
 const { pipeline } = GitLab;
 
@@ -22,7 +22,7 @@ Or, if you want to use the predefined jobs:
 
 ```ts
 import { GitlabCI } from "https://deno.land/x/fluent_gitlab_ci/mod.ts";
-import { GitLab } from "https://deno.land/x/symphony_pipeline/mod.ts";
+import { GitLab } from "https://deno.land/x/symfony_pipeline/mod.ts";
 
 const { phpUnit, phpcs, phpstan, securityChecker, twigLint } = GitLab;
 
