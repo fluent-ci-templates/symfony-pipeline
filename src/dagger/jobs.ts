@@ -8,6 +8,7 @@ export const securityChecker = async (client: Client, context: Directory) => {
     .withDirectory("/app", context, {
       exclude: ["vendor", "node_modules", ".git"],
     })
+    .withWorkdir("/app")
     .withExec(["local-php-security-checker", "--path=./composer.lock"]);
 
   const result = await ctr.stdout();
@@ -15,7 +16,8 @@ export const securityChecker = async (client: Client, context: Directory) => {
   console.log(result);
 };
 
-export const phpcs = async (client: Client, context: Directory) => {
+export const phpcs = async (client: Client, src = ".") => {
+  const context = client.host().directory(src);
   const ctr = client
     .pipeline("phpcs")
     .container()
@@ -45,6 +47,7 @@ export const phpstan = async (client: Client, src = ".") => {
     .withDirectory("/app", context, {
       exclude: ["vendor", "node_modules", ".git"],
     })
+    .withWorkdir("/app")
     .withExec(["phpstan", "analyse", "./src"]);
 
   const result = await ctr.stdout();
@@ -61,6 +64,7 @@ export const twigLint = async (client: Client, src = ".") => {
     .withDirectory("/app", context, {
       exclude: ["vendor", "node_modules", ".git"],
     })
+    .withWorkdir("/app")
     .withExec(["twig-lint", "lint", "./templates"]);
 
   const result = await ctr.stdout();
@@ -73,10 +77,11 @@ export const phpUnit = async (client: Client, src = ".") => {
   const ctr = client
     .pipeline("phpunit")
     .container()
+    .from("jakzal/phpqa:php8.1")
     .withDirectory("/app", context, {
       exclude: ["vendor", "node_modules", ".git"],
     })
-    .from("jakzal/phpqa:php8.1")
+    .withWorkdir("/app")
     .withExec(["php", "bin/phpunit"]);
 
   const result = await ctr.stdout();
