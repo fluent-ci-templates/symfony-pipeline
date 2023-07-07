@@ -1,6 +1,7 @@
-import Client, { Directory } from "@dagger.io/dagger";
+import Client from "@dagger.io/dagger";
 
-export const securityChecker = async (client: Client, context: Directory) => {
+export const securityChecker = async (client: Client, src = ".") => {
+  const context = client.host().directory(src);
   const ctr = client
     .pipeline("security-checker")
     .container()
