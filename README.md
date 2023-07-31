@@ -75,3 +75,34 @@ phpunit:
     - php bin/phpunit
   stage: UnitTests
 ```
+
+
+## 🧪 Advanced Usage
+
+This package also provides a ready-to-use pipeline for
+[Dagger](https://dagger.io/), just run the following command on your Symfony project:
+
+```sh
+dagger run deno run -A https://deno.land/x/symfony_pipeline/ci.ts
+```
+
+Or, if you want to use the predefined jobs:
+
+```ts
+import Client, { connect } from "@dagger.io/dagger";
+import { Dagger } from "https://deno.land/x/symfony_pipeline/mod.ts";
+
+const { securityChecker, phpcs, phpstan, twigLint, phpUnit  } = Dagger;
+
+function pipeline(src = ".") {
+  connect(async (client: Client) => {
+    await securityChecker(client, src);
+    await phpcs(client, src);
+    await phpstan(client, src);
+    await twigLint(client, src);
+    await phpUnit(client, src);
+  });
+}
+
+pipeline();
+```
