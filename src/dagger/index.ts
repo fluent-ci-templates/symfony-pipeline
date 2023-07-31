@@ -1,4 +1,21 @@
 import pipeline from "./pipeline.ts";
-import { securityChecker, phpcs, phpstan, twigLint, phpUnit } from "./jobs.ts";
+import {
+  phpcs,
+  phpstan,
+  twigLint,
+  xliffLint,
+  yamlLint,
+  doctrineLint,
+  phpUnit,
+} from "./jobs.ts";
 
-export { pipeline, securityChecker, phpcs, phpstan, twigLint, phpUnit };
+export {
+  pipeline,
+  phpcs,
+  phpstan,
+  twigLint,
+  xliffLint,
+  yamlLint,
+  doctrineLint,
+  phpUnit,
+};
