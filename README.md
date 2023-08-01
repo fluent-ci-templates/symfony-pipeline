@@ -49,7 +49,8 @@ You can also use this pipeline programmatically:
 import Client, { connect } from "@dagger.io/dagger";
 import { Dagger } from "https://deno.land/x/symfony_pipeline/mod.ts";
 
-const { phpcs,
+const { 
+  phpcs,
   phpstan,
   twigLint,
   xliffLint,
@@ -61,7 +62,7 @@ const { phpcs,
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {
-    await phpc(client, src);
+    await phpcs(client, src);
     await phpstan(client, src);
     await twigLint(client, src);
     await xliffLint(client, src);
