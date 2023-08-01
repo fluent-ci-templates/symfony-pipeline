@@ -30,7 +30,7 @@ dagger run fluentci .
 
 ## Jobs
 
-| Job          | Description                 |
+| Job          | Description                  |
 | ------------ | ---------------------------- |
 | phpstan      | Run PHPStan                  |
 | phpcs        | Run PHPCS                    |
