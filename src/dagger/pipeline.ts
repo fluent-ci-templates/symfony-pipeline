@@ -1,5 +1,7 @@
 import Client, { connect } from "@dagger.io/dagger";
-import {
+import * as jobs from "./jobs.ts";
+
+const {
   containerLint,
   doctrineLint,
   phpUnit,
@@ -7,10 +9,15 @@ import {
   twigLint,
   xliffLint,
   yamlLint,
-} from "./jobs.ts";
+} = jobs;
 
-export default function pipeline(_src = ".") {
+export default function pipeline(_src = ".", args: string[] = []) {
   connect(async (client: Client) => {
+    if (args.length > 0) {
+      await runSpecificJobs(client, args);
+      return;
+    }
+
     await twigLint(client);
     await yamlLint(client);
     await xliffLint(client);
@@ -19,4 +26,15 @@ export default function pipeline(_src = ".") {
     await phpstan(client);
     await phpUnit(client);
   });
+}
+
+async function runSpecificJobs(client: Client, args: string[]) {
+  for (const name of args) {
+    // deno-lint-ignore no-explicit-any
+    const job = (jobs as any)[name];
+    if (!job) {
+      throw new Error(`Job ${name} not found`);
+    }
+    await job(client);
+  }
 }
