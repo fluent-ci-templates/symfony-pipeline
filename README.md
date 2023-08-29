@@ -48,7 +48,7 @@ You can also use this pipeline programmatically:
 
 ```ts
 import { Client, connect } from "https://esm.sh/@dagger.io/dagger@0.8.1";
-import { Dagger } from "https://pkg.fluentci.io/x/symfony_pipeline/mod.ts";
+import { Dagger } from "https://pkg.fluentci.io/symfony_pipeline/mod.ts";
 
 const { 
   phpcs,
