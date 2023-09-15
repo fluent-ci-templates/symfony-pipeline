@@ -1,5 +1,5 @@
 import Client from "@fluentci.io/dagger";
-import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.4.1/src/dagger/steps.ts";
+import { withDevbox } from "https://nix.fluentci.io/v0.4.1/src/dagger/steps.ts";
 
 export enum Job {
   phpcs = "phpcs",
@@ -11,6 +11,14 @@ export enum Job {
   doctrineLint = "doctrine-lint",
   phpUnit = "phpunit",
 }
+
+export const exclude = [
+  "vendor",
+  "node_modules",
+  ".git",
+  ".fluentci",
+  ".devbox",
+];
 
 export const phpcs = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
@@ -30,9 +38,7 @@ export const phpcs = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
     .withExec([
       "sh",
@@ -63,9 +69,7 @@ export const phpstan = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -107,9 +111,7 @@ export const twigLint = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withEnvVariable("DEVBOX_DEBUG", "1")
     .withExec([
@@ -146,9 +148,7 @@ export const yamlLint = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -184,9 +184,7 @@ export const xliffLint = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -222,9 +220,7 @@ export const containerLint = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -260,9 +256,7 @@ export const doctrineLint = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec([
       "sh",
@@ -298,9 +292,7 @@ export const phpUnit = async (client: Client, src = ".") => {
       "/app/node_modules",
       client.cacheVolume("symfony-node_modules")
     )
-    .withDirectory("/app", context, {
-      exclude: ["vendor", "node_modules", ".git", ".fluentci", ".devbox"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
     .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit install"])
