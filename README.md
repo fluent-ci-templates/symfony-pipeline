@@ -47,10 +47,8 @@ dagger run fluentci .
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.4/mod.ts";
-import { Dagger } from "https://pkg.fluentci.io/symfony_pipeline/mod.ts";
-
-const { 
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
+import { 
   phpcs,
   phpstan,
   twigLint,
@@ -58,8 +56,8 @@ const {
   yamlLint,
   doctrineLint,
   containerLint,
-  phpUnit 
-} = Dagger;
+  phpUnit,
+ } from "https://pkg.fluentci.io/symfony_pipeline@v0.5.0/mod.ts";
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {
