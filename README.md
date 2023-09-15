@@ -57,7 +57,7 @@ import {
   doctrineLint,
   containerLint,
   phpUnit,
- } from "https://pkg.fluentci.io/symfony_pipeline@v0.5.0/mod.ts";
+ } from "https://pkg.fluentci.io/symfony_pipeline@v0.5.1/mod.ts";
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {
