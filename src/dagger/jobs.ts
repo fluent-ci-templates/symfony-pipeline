@@ -18,6 +18,7 @@ export const exclude = [
   ".git",
   ".fluentci",
   ".devbox",
+  "var",
 ];
 
 export const phpcs = async (client: Client, src = ".") => {

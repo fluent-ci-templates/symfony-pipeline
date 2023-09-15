@@ -7,6 +7,7 @@ import {
   yamlLint,
   doctrineLint,
   phpUnit,
+  containerLint,
 } from "./jobs.ts";
 
 export {
@@ -18,4 +19,5 @@ export {
   yamlLint,
   doctrineLint,
   phpUnit,
+  containerLint,
 };
