@@ -47,7 +47,7 @@ dagger run fluentci .
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
 import { 
   phpcs,
   phpstan,
@@ -57,7 +57,7 @@ import {
   doctrineLint,
   containerLint,
   phpUnit,
- } from "https://pkg.fluentci.io/symfony_pipeline@v0.5.1/mod.ts";
+ } from "https://pkg.fluentci.io/symfony_pipeline@v0.5.2/mod.ts";
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {
