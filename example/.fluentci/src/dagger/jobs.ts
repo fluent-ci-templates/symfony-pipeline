@@ -1,4 +1,4 @@
-import Client, { connect } from "../../deps.ts";
+import Client, { CacheSharingMode, connect } from "../../deps.ts";
 
 export enum Job {
   phpcs = "phpcs",
@@ -28,7 +28,9 @@ export const phpcs = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -61,7 +63,9 @@ export const phpstan = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -108,7 +112,9 @@ export const twigLint = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -146,7 +152,9 @@ export const yamlLint = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -183,7 +191,9 @@ export const xliffLint = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -220,7 +230,9 @@ export const containerLint = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -257,7 +269,9 @@ export const doctrineLint = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -294,7 +308,9 @@ export const phpUnit = async (src = ".") => {
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
+        sharing: CacheSharingMode.Shared,
+      })
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
