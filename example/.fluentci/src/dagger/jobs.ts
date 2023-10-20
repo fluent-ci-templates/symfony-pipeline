@@ -1,4 +1,4 @@
-import Client, { connect, withDevbox } from "../../deps.ts";
+import Client, { connect } from "../../deps.ts";
 
 export enum Job {
   phpcs = "phpcs",
@@ -23,16 +23,14 @@ export const exclude = [
 export const phpcs = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.phpcs)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.phpcs)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -57,16 +55,14 @@ export const phpcs = async (src = ".") => {
 export const phpstan = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.phpstan)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.phpstan)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -106,16 +102,14 @@ export const phpstan = async (src = ".") => {
 export const twigLint = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.twigLint)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.twigLint)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -146,16 +140,14 @@ export const twigLint = async (src = ".") => {
 export const yamlLint = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.yamlLint)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.yamlLint)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -185,16 +177,14 @@ export const yamlLint = async (src = ".") => {
 export const xliffLint = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.xliffLint)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.xliffLint)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -224,16 +214,14 @@ export const xliffLint = async (src = ".") => {
 export const containerLint = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.containerLint)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.containerLint)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -263,16 +251,14 @@ export const containerLint = async (src = ".") => {
 export const doctrineLint = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.doctrineLint)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.doctrineLint)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
@@ -302,16 +288,14 @@ export const doctrineLint = async (src = ".") => {
 export const phpUnit = async (src = ".") => {
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const baseCtr = withDevbox(
-      client
-        .pipeline(Job.phpUnit)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec(["apk", "add", "bash", "curl"])
-        .withMountedCache("/nix", client.cacheVolume("nix"))
-        .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-    );
+    const baseCtr = client
+      .pipeline(Job.phpUnit)
+      .container()
+      .from("ghcr.io/fluentci-io/devbox:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
       .withMountedCache(
