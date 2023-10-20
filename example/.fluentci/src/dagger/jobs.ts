@@ -38,6 +38,7 @@ export const phpcs = async (src = ".") => {
         client.cacheVolume("symfony-node_modules")
       )
       .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
       .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
       .withExec([
         "sh",
