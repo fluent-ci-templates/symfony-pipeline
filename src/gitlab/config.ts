@@ -25,7 +25,7 @@ export function generateYaml(): GitlabCI {
 
   const tests = new Job()
     .extends(".dagger")
-    .script("dagger run fluentci symfony_pipeline");
+    .script("fluentci run symfony_pipeline");
 
   return new GitlabCI()
     .addJob(".docker", docker)
