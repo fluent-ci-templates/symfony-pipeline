@@ -24,4 +24,4 @@
 tests:
   extends: .dagger
   script:
-    - dagger run fluentci symfony_pipeline
+    - fluentci run symfony_pipeline
