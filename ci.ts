@@ -1,12 +1,19 @@
-const command = new Deno.Command(Deno.execPath(), {
-  args: [
-    "run",
-    "-A",
-    "--import-map=https://deno.land/x/symfony_pipeline/import_map.json",
-    "https://deno.land/x/symfony_pipeline/src/dagger/runner.ts",
-  ],
-});
+import {
+  phpcs,
+  phpstan,
+  twigLint,
+  xliffLint,
+  yamlLint,
+  doctrineLint,
+  containerLint,
+  phpUnit,
+} from "https://pkg.fluentci.io/symfony_pipeline@v0.6.0/mod.ts";
 
-const { stdout } = await command.output();
-
-console.log(new TextDecoder().decode(stdout));
+await phpcs();
+await phpstan();
+await twigLint();
+await xliffLint();
+await yamlLint();
+await doctrineLint();
+await containerLint();
+await phpUnit();
