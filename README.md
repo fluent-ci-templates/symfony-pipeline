@@ -26,7 +26,15 @@ This will create a `.fluentci` folder in your project.
 Now you can run the pipeline with:
 
 ```bash
-dagger run fluentci .
+fluentci run .
+```
+
+## Dagger Module
+
+Use as a [Dagger](https://dagger.io) module:
+
+```bash
+dagger mod install github.com/fluent-ci-templates/symfony-pipeline@mod
 ```
 
 ## Jobs
@@ -42,15 +50,15 @@ dagger run fluentci .
 | containerLint| Lint Parameters and Services |
 | phpUnit      | Run PHPUnit                  | 
 
-```graphql
-containerLint(src: String!): String
-doctrineLint(src: String!): String
-phpUnit(src: String!): String
-phpcs(src: String!): String
-phpstan(src: String!): String
-twigLint(src: String!): String
-xliffLint(src: String!): String
-yamlLint(src: String!): String
+```typescript
+containerLint(src: Directory | string = "."): Promise<string>
+doctrineLint(src: Directory | string = "."): Promise<string>
+phpUnit(src: Directory | string = "."): Promise<string>
+phpcs(src: Directory | string = "."): Promise<string>
+phpstan(src: Directory | string = "."): Promise<string>
+twigLint(src: Directory | string = "."): Promise<string>
+xliffLint(src: Directory | string = "."): Promise<string>
+yamlLint(src: Directory | string = "."): Promise<string>
 ```
 
 ## Programmatic usage

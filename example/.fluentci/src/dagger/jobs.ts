@@ -1,4 +1,6 @@
-import Client, { CacheSharingMode, connect } from "../../deps.ts";
+import { Client, Directory } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   phpcs = "phpcs",
@@ -20,17 +22,22 @@ export const exclude = [
   "var",
 ];
 
-export const phpcs = async (src = ".") => {
+/**
+ * @function
+ * @description Run phpcs
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function phpcs(src: Directory | string = "."): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.phpcs)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -48,24 +55,29 @@ export const phpcs = async (src = ".") => {
         "devbox run -- phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const phpstan = async (src = ".") => {
+/**
+ * @function
+ * @description Run phpstan
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function phpstan(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.phpstan)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -97,24 +109,27 @@ export const phpstan = async (src = ".") => {
         "devbox run -- ./vendor/bin/phpstan analyse ./src --memory-limit=1G",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const twigLint = async (src = ".") => {
+/**
+ * @function
+ * @description Run twig-lint
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function twigLint(src: Directory | string = "."): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.twigLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -137,24 +152,27 @@ export const twigLint = async (src = ".") => {
         "devbox run -- ./bin/console lint:twig templates --env=prod",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const yamlLint = async (src = ".") => {
+/**
+ * @function
+ * @description Run yaml-lint
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function yamlLint(src: Directory | string = "."): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.yamlLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -176,24 +194,29 @@ export const yamlLint = async (src = ".") => {
         "devbox run -- ./bin/console lint:yaml config --parse-tags",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const xliffLint = async (src = ".") => {
+/**
+ * @function
+ * @description Run xliff-lint
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function xliffLint(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.xliffLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -215,24 +238,29 @@ export const xliffLint = async (src = ".") => {
         "devbox run -- ./bin/console lint:xliff translations",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const containerLint = async (src = ".") => {
+/**
+ * @function
+ * @description Run container-lint
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function containerLint(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.containerLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -254,24 +282,29 @@ export const containerLint = async (src = ".") => {
         "devbox run -- ./bin/console lint:container --no-debug",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const doctrineLint = async (src = ".") => {
+/**
+ * @function
+ * @description Run doctrine-lint
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function doctrineLint(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.doctrineLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -292,25 +325,29 @@ export const doctrineLint = async (src = ".") => {
         "-c",
         "devbox run -- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
       ]);
-
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export const phpUnit = async (src = ".") => {
+/**
+ * @function
+ * @description Run phpunit
+ * @param {string | Directory} src
+ * @returns {Promise<string>}
+ */
+export async function phpUnit(
+  src: Directory | string | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
     const baseCtr = client
       .pipeline(Job.phpUnit)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"), {
-        sharing: CacheSharingMode.Shared,
-      })
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
@@ -330,14 +367,12 @@ export const phpUnit = async (src = ".") => {
       ])
       .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "Done";
-};
+  return result;
+}
 
-export type JobExec = (src?: string) => Promise<string>;
+export type JobExec = (src?: Directory | string) => Promise<string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.phpcs]: phpcs,
