@@ -36,9 +36,6 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
       .pipeline(Job.phpcs)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -76,9 +73,6 @@ export async function phpstan(
       .pipeline(Job.phpstan)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -128,9 +122,6 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
       .pipeline(Job.twigLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -171,9 +162,6 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
       .pipeline(Job.yamlLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -215,9 +203,6 @@ export async function xliffLint(
       .pipeline(Job.xliffLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -259,9 +244,6 @@ export async function containerLint(
       .pipeline(Job.containerLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -303,9 +285,6 @@ export async function doctrineLint(
       .pipeline(Job.doctrineLint)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
@@ -346,9 +325,6 @@ export async function phpUnit(
       .pipeline(Job.phpUnit)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withExec(["sh", "-c", "devbox version update"]);
     const ctr = baseCtr
       .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
