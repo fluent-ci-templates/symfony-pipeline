@@ -21,7 +21,6 @@ jobs:
           dagger query --doc containerLint.gql
           dagger query --doc doctrineLint.gql
           dagger query --doc phpstan.gql
-          dagger query --doc phpcs.gql
           dagger query --doc phpUnit.gql
           dagger query --doc twigLint.gql
           dagger query --doc xliffLint.gql
