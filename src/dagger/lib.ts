@@ -1,9 +1,4 @@
-import Client, {
-  Directory,
-  DirectoryID,
-  Secret,
-  SecretID,
-} from "../../deps.ts";
+import Client, { Directory, DirectoryID } from "../../deps.ts";
 
 export const getDirectory = (
   client: Client,
