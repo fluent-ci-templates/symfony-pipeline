@@ -32,9 +32,31 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
   const baseCtr = dag
     .pipeline(Job.phpcs)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ])
+    .withExec([
+      "composer",
+      "global",
+      "require",
+      '"squizlabs/php_codesniffer=*"',
+      "--no-interaction",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -43,11 +65,13 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
+    .withExec(["composer", "install", "--no-interaction"])
     .withExec([
-      "sh",
-      "-c",
-      "devbox run -- phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src",
+      "phpcs",
+      "-v",
+      "--standard=PSR12",
+      "--ignore=./src/Kernel.php",
+      "./src",
     ]);
 
   const result = await ctr.stdout();
@@ -67,9 +91,24 @@ export async function phpstan(
   const baseCtr = dag
     .pipeline(Job.phpstan)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -78,21 +117,13 @@ export async function phpstan(
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
+    .withExec(["bash", "-c", "./vendor/bin/simple-phpunit install"])
+    .withExec(["bash", "-c", "./vendor/bin/simple-phpunit --version"])
     .withExec([
-      "sh",
+      "bash",
       "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec(["sh", "-c", "devbox run -- ./vendor/bin/simple-phpunit install"])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./vendor/bin/simple-phpunit --version",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./vendor/bin/phpstan analyse ./src --memory-limit=1G",
+      "./vendor/bin/phpstan analyse ./src --memory-limit=1G",
     ]);
 
   const result = await ctr.stdout();
@@ -110,9 +141,24 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
   const baseCtr = dag
     .pipeline(Job.twigLint)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -121,17 +167,8 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withEnvVariable("DEVBOX_DEBUG", "1")
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./bin/console lint:twig templates --env=prod",
-    ]);
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
+    .withExec(["bash", "-c", "./bin/console lint:twig templates --env=prod"]);
 
   const result = await ctr.stdout();
   return result;
@@ -148,9 +185,24 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
   const baseCtr = dag
     .pipeline(Job.yamlLint)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -159,16 +211,8 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./bin/console lint:yaml config --parse-tags",
-    ]);
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
+    .withExec(["bash", "-c", "./bin/console lint:yaml config --parse-tags"]);
 
   const result = await ctr.stdout();
   return result;
@@ -187,9 +231,24 @@ export async function xliffLint(
   const baseCtr = dag
     .pipeline(Job.xliffLint)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -198,16 +257,8 @@ export async function xliffLint(
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./bin/console lint:xliff translations",
-    ]);
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
+    .withExec(["bash", "-c", "./bin/console lint:xliff translations"]);
 
   const result = await ctr.stdout();
   return result;
@@ -226,9 +277,24 @@ export async function containerLint(
   const baseCtr = dag
     .pipeline(Job.containerLint)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -237,16 +303,8 @@ export async function containerLint(
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./bin/console lint:container --no-debug",
-    ]);
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
+    .withExec(["bash", "-c", "./bin/console lint:container --no-debug"]);
 
   const result = await ctr.stdout();
   return result;
@@ -265,9 +323,24 @@ export async function doctrineLint(
   const baseCtr = dag
     .pipeline(Job.doctrineLint)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -276,15 +349,11 @@ export async function doctrineLint(
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
+    .withExec(["composer", "install", "--no-interaction", "--no-progress"])
     .withExec([
-      "sh",
+      "bash",
       "-c",
-      "devbox run -- composer install --no-interaction --no-progress",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
+      "./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
     ]);
   const result = await ctr.stdout();
   return result;
@@ -303,9 +372,24 @@ export async function phpUnit(
   const baseCtr = dag
     .pipeline(Job.phpUnit)
     .container()
-    .from("ghcr.io/fluentci-io/devbox:latest")
-    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-    .withExec(["sh", "-c", "devbox version update"]);
+    .from("pkgxdev/pkgx:latest")
+    .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
+    .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
+      expand: true,
+    })
+    .withExec([
+      "pkgx",
+      "install",
+      "node@18.16.1",
+      "classic.yarnpkg.com",
+      "bun",
+      "symfony",
+      "composer",
+      "php",
+      "git",
+      "zip",
+      "unzip",
+    ]);
   const ctr = baseCtr
     .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
     .withMountedCache(
@@ -314,10 +398,10 @@ export async function phpUnit(
     )
     .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
-    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit install"])
-    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit --version"])
-    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit"]);
+    .withExec(["composer", "install", "--no-interaction"])
+    .withExec(["bash", "-c", "./vendor/bin/simple-phpunit install"])
+    .withExec(["bash", "-c", "./vendor/bin/simple-phpunit --version"])
+    .withExec(["bash", "-c", "./vendor/bin/simple-phpunit"]);
 
   const result = await ctr.stdout();
   return result;
