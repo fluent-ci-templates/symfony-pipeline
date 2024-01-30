@@ -33,6 +33,7 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
     .pipeline(Job.phpcs)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -92,6 +93,7 @@ export async function phpstan(
     .pipeline(Job.phpstan)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -142,6 +144,7 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
     .pipeline(Job.twigLint)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -186,6 +189,7 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
     .pipeline(Job.yamlLint)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -232,6 +236,7 @@ export async function xliffLint(
     .pipeline(Job.xliffLint)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -278,6 +283,7 @@ export async function containerLint(
     .pipeline(Job.containerLint)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -324,6 +330,7 @@ export async function doctrineLint(
     .pipeline(Job.doctrineLint)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
@@ -373,6 +380,7 @@ export async function phpUnit(
     .pipeline(Job.phpUnit)
     .container()
     .from("pkgxdev/pkgx:latest")
+    .withMountedCache("/root/.pkgx", dag.cacheVolume("symfony-pkgx"))
     .withEnvVariable("COMPOSER_ALLOW_SUPERUSER", "1")
     .withEnvVariable("PATH", "$PATH:$HOME/.config/composer/vendor/bin", {
       expand: true,
