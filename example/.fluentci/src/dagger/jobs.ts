@@ -1,5 +1,4 @@
-import { Client, Directory } from "../../sdk/client.gen.ts";
-import { connect } from "../../sdk/connect.ts";
+import { Directory, dag } from "../../sdk/client.gen.ts";
 import { getDirectory } from "./lib.ts";
 
 export enum Job {
@@ -29,32 +28,29 @@ export const exclude = [
  * @returns {Promise<string>}
  */
 export async function phpcs(src: Directory | string = "."): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.phpcs)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.phpcs)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- phpcs -v --standard=PSR12 --ignore=./src/Kernel.php ./src",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -67,46 +63,39 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
 export async function phpstan(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.phpstan)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./vendor/bin/simple-phpunit install",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./vendor/bin/simple-phpunit --version",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./vendor/bin/phpstan analyse ./src --memory-limit=1G",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.phpstan)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec(["sh", "-c", "devbox run -- ./vendor/bin/simple-phpunit install"])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./vendor/bin/simple-phpunit --version",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./vendor/bin/phpstan analyse ./src --memory-limit=1G",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -117,37 +106,34 @@ export async function phpstan(
  * @returns {Promise<string>}
  */
 export async function twigLint(src: Directory | string = "."): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.twigLint)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withEnvVariable("DEVBOX_DEBUG", "1")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./bin/console lint:twig templates --env=prod",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.twigLint)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withEnvVariable("DEVBOX_DEBUG", "1")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./bin/console lint:twig templates --env=prod",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -158,36 +144,33 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
  * @returns {Promise<string>}
  */
 export async function yamlLint(src: Directory | string = "."): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.yamlLint)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./bin/console lint:yaml config --parse-tags",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.yamlLint)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./bin/console lint:yaml config --parse-tags",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -200,36 +183,33 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
 export async function xliffLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.xliffLint)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./bin/console lint:xliff translations",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.xliffLint)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./bin/console lint:xliff translations",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -242,36 +222,33 @@ export async function xliffLint(
 export async function containerLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.containerLint)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./bin/console lint:container --no-debug",
-      ]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.containerLint)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./bin/console lint:container --no-debug",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -284,35 +261,32 @@ export async function containerLint(
 export async function doctrineLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.doctrineLint)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- composer install --no-interaction --no-progress",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
-      ]);
-    result = await ctr.stdout();
-  });
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.doctrineLint)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- composer install --no-interaction --no-progress",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
+    ]);
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -325,34 +299,27 @@ export async function doctrineLint(
 export async function phpUnit(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
-    const baseCtr = client
-      .pipeline(Job.phpUnit)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
-      .withExec(["sh", "-c", "devbox version update"]);
-    const ctr = baseCtr
-      .withMountedCache("/app/vendor", client.cacheVolume("composer-vendor"))
-      .withMountedCache(
-        "/app/node_modules",
-        client.cacheVolume("symfony-node_modules")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
-      .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit install"])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- vendor/bin/simple-phpunit --version",
-      ])
-      .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit"]);
+  const context = await getDirectory(dag, src);
+  const baseCtr = dag
+    .pipeline(Job.phpUnit)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"])
+    .withExec(["sh", "-c", "devbox version update"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/vendor", dag.cacheVolume("composer-vendor"))
+    .withMountedCache(
+      "/app/node_modules",
+      dag.cacheVolume("symfony-node_modules")
+    )
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "devbox run -- composer install --no-interaction"])
+    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit install"])
+    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit --version"])
+    .withExec(["sh", "-c", "devbox run -- vendor/bin/simple-phpunit"]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
