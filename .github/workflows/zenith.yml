@@ -13,16 +13,16 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup Dagger Zenith
         run: |
-          curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.9.3 sh
+          curl -L https://dl.dagger.io/dagger/install.sh | DAGGER_VERSION=0.9.7 sh
           sudo mv bin/dagger /usr/local/bin
           dagger version
       - name: Run Dagger Pipelines
         run: |
-          dagger query --doc containerLint.gql
-          dagger query --doc doctrineLint.gql
-          dagger query --doc phpstan.gql
-          dagger query --doc phpUnit.gql
-          dagger query --doc twigLint.gql
-          dagger query --doc xliffLint.gql
-          dagger query --doc yamlLint.gql
+          dagger call containerLint --src .
+          dagger call doctrineLint --src .
+          dagger call phpstan --src .
+          dagger call phpUnit --src .
+          dagger call twigLint --src .
+          dagger call xliffLint --src .
+          dagger call yamlLint --src .
         working-directory: example
