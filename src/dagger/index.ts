@@ -8,6 +8,8 @@ import {
   doctrineLint,
   phpUnit,
   containerLint,
+  exclude,
+  jobDescriptions,
 } from "./jobs.ts";
 
 export {
@@ -20,4 +22,6 @@ export {
   doctrineLint,
   phpUnit,
   containerLint,
+  exclude,
+  jobDescriptions,
 };
