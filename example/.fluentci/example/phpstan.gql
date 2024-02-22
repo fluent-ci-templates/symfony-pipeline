@@ -1,5 +1,0 @@
-{
-  symfony {
-    phpstan(src: ".")
-  }
-}
