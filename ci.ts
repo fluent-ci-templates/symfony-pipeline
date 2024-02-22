@@ -7,7 +7,7 @@ import {
   doctrineLint,
   containerLint,
   phpUnit,
-} from "https://pkg.fluentci.io/symfony_pipeline@v0.7.4/mod.ts";
+} from "https://pkg.fluentci.io/symfony_pipeline@v0.7.5/mod.ts";
 
 await phpcs();
 await phpstan();

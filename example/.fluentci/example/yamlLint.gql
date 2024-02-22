@@ -1,5 +1,0 @@
-{
-  symfony {
-    yamlLint(src: ".")
-  }
-}
