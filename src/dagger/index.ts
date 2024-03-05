@@ -1,4 +1,3 @@
-import pipeline from "./pipeline.ts";
 import {
   phpcs,
   phpstan,
@@ -13,7 +12,6 @@ import {
 } from "./jobs.ts";
 
 export {
-  pipeline,
   phpcs,
   phpstan,
   twigLint,

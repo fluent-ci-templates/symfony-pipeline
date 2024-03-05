@@ -22,13 +22,15 @@ export const exclude = [
 ];
 
 /**
+ * Run phpcs
+ *
  * @function
  * @description Run phpcs
  * @param {string | Directory} src
  * @returns {Promise<string>}
  */
 export async function phpcs(src: Directory | string = "."): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.phpcs)
     .container()
@@ -75,11 +77,12 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
       "./src",
     ]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run phpstan
+ *
  * @function
  * @description Run phpstan
  * @param {string | Directory} src
@@ -88,7 +91,7 @@ export async function phpcs(src: Directory | string = "."): Promise<string> {
 export async function phpstan(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.phpstan)
     .container()
@@ -128,18 +131,19 @@ export async function phpstan(
       "./vendor/bin/phpstan analyse ./src --memory-limit=1G",
     ]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run twig-lint
+ *
  * @function
  * @description Run twig-lint
  * @param {string | Directory} src
  * @returns {Promise<string>}
  */
 export async function twigLint(src: Directory | string = "."): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.twigLint)
     .container()
@@ -173,18 +177,19 @@ export async function twigLint(src: Directory | string = "."): Promise<string> {
     .withExec(["composer", "install", "--no-interaction", "--no-progress"])
     .withExec(["bash", "-c", "./bin/console lint:twig templates --env=prod"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run yaml-lint
+ *
  * @function
  * @description Run yaml-lint
  * @param {string | Directory} src
  * @returns {Promise<string>}
  */
 export async function yamlLint(src: Directory | string = "."): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.yamlLint)
     .container()
@@ -218,11 +223,12 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
     .withExec(["composer", "install", "--no-interaction", "--no-progress"])
     .withExec(["bash", "-c", "./bin/console lint:yaml config --parse-tags"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run xliff-lint
+ *
  * @function
  * @description Run xliff-lint
  * @param {string | Directory} src
@@ -231,7 +237,7 @@ export async function yamlLint(src: Directory | string = "."): Promise<string> {
 export async function xliffLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.xliffLint)
     .container()
@@ -265,11 +271,12 @@ export async function xliffLint(
     .withExec(["composer", "install", "--no-interaction", "--no-progress"])
     .withExec(["bash", "-c", "./bin/console lint:xliff translations"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run container-lint
+ *
  * @function
  * @description Run container-lint
  * @param {string | Directory} src
@@ -278,7 +285,7 @@ export async function xliffLint(
 export async function containerLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.containerLint)
     .container()
@@ -312,11 +319,12 @@ export async function containerLint(
     .withExec(["composer", "install", "--no-interaction", "--no-progress"])
     .withExec(["bash", "-c", "./bin/console lint:container --no-debug"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ *  Run doctrine-lint
+ *
  * @function
  * @description Run doctrine-lint
  * @param {string | Directory} src
@@ -325,7 +333,7 @@ export async function containerLint(
 export async function doctrineLint(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.doctrineLint)
     .container()
@@ -362,11 +370,12 @@ export async function doctrineLint(
       "-c",
       "./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction",
     ]);
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 /**
+ * Run phpunit
+ *
  * @function
  * @description Run phpunit
  * @param {string | Directory} src
@@ -375,7 +384,7 @@ export async function doctrineLint(
 export async function phpUnit(
   src: Directory | string | undefined = "."
 ): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
   const baseCtr = dag
     .pipeline(Job.phpUnit)
     .container()
@@ -411,8 +420,7 @@ export async function phpUnit(
     .withExec(["bash", "-c", "./vendor/bin/simple-phpunit --version"])
     .withExec(["bash", "-c", "./vendor/bin/simple-phpunit"]);
 
-  const result = await ctr.stdout();
-  return result;
+  return ctr.stdout();
 }
 
 export type JobExec = (src?: Directory | string) => Promise<string>;

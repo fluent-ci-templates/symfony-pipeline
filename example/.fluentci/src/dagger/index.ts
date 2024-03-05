@@ -1,4 +1,3 @@
-import pipeline from "./pipeline.ts";
 import {
   phpcs,
   phpstan,
@@ -8,10 +7,11 @@ import {
   doctrineLint,
   phpUnit,
   containerLint,
+  exclude,
+  jobDescriptions,
 } from "./jobs.ts";
 
 export {
-  pipeline,
   phpcs,
   phpstan,
   twigLint,
@@ -20,4 +20,6 @@ export {
   doctrineLint,
   phpUnit,
   containerLint,
+  exclude,
+  jobDescriptions,
 };
