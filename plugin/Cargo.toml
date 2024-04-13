@@ -1,6 +1,6 @@
 [package]
 edition = "2021"
-name = "plugin"
+name = "symfony"
 version = "0.9.0"
 
 [lib]
