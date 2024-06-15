@@ -1,0 +1,8 @@
+[package]
+authors = [
+  "Tsiry Sandratraina <tsiry.sndr@fluentci.io>",
+]
+description = "CI/CD Plugin for Symfony"
+license = "MIT"
+name = "symfony"
+version = "0.9.0"
